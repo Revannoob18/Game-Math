@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Matematika Interaktif</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Halaman Menu Utama -->
+    <div id="mainMenu" class="screen active">
+        <div class="container">
+            <h1 class="game-title">🎮 GAME MATEMATIKA</h1>
+            <p class="subtitle">Asah Kemampuan Matematikamu!</p>
+            <div class="menu-buttons">
+                <button class="btn btn-primary" onclick="showLevelSelect()">🎯 Mulai Game</button>
+                <button class="btn btn-secondary" onclick="showHowToPlay()">📖 Cara Bermain</button>
+                <button class="btn btn-secondary" onclick="showHighScore()">🏆 High Score</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Halaman Pilih Level -->
+    <div id="levelSelect" class="screen">
+        <div class="container">
+            <h2>Pilih Level Kesulitan</h2>
+            <div class="level-grid">
+                <div class="level-card" onclick="selectLevel('mudah')">
+                    <div class="level-icon">😊</div>
+                    <h3>Mudah</h3>
+                    <p>Penjumlahan & Pengurangan</p>
+                    <p class="level-range">Angka 1-20</p>
+                </div>
+                <div class="level-card" onclick="selectLevel('sedang')">
+                    <div class="level-icon">🤔</div>
+                    <h3>Sedang</h3>
+                    <p>Perkalian & Pembagian</p>
+                    <p class="level-range">Angka 1-10</p>
+                </div>
+                <div class="level-card" onclick="selectLevel('sulit')">
+                    <div class="level-icon">😎</div>
+                    <h3>Sulit</h3>
+                    <p>Campuran Semua Operasi</p>
+                    <p class="level-range">Angka 1-50</p>
+                </div>
+                <div class="level-card" onclick="selectLevel('expert')">
+                    <div class="level-icon">🔥</div>
+                    <h3>Expert</h3>
+                    <p>Waktu Cepat + Campuran</p>
+                    <p class="level-range">Angka 1-100</p>
+                </div>
+            </div>
+            <button class="btn btn-back" onclick="showMainMenu()">⬅ Kembali</button>
+        </div>
+    </div>
+
+    <!-- Halaman Pilih Mode -->
+    <div id="modeSelect" class="screen">
+        <div class="container">
+            <h2>Pilih Mode Permainan</h2>
+            <div class="mode-grid">
+                <div class="mode-card" onclick="startGame('time')">
+                    <div class="mode-icon">⏱️</div>
+                    <h3>Mode Waktu</h3>
+                    <p>Kerjakan sebanyak mungkin dalam 60 detik</p>
+                </div>
+                <div class="mode-card" onclick="startGame('survival')">
+                    <div class="mode-icon">❤️</div>
+                    <h3>Mode Survival</h3>
+                    <p>3 nyawa - Bertahan selama mungkin</p>
+                </div>
+                <div class="mode-card" onclick="startGame('challenge')">
+                    <div class="mode-icon">🎯</div>
+                    <h3>Mode Tantangan</h3>
+                    <p>40 soal - Raih skor tertinggi</p>
+                </div>
+            </div>
+            <button class="btn btn-back" onclick="showLevelSelect()">⬅ Kembali</button>
+        </div>
+    </div>
+
+    <!-- Halaman Game -->
+    <div id="gameScreen" class="screen">
+        <div class="game-container">
+            <!-- Header Game -->
+            <div class="game-header">
+                <div class="stat-box">
+                    <span class="stat-label">Skor</span>
+                    <span class="stat-value" id="score">0</span>
+                </div>
+                <div class="stat-box" id="timerBox">
+                    <span class="stat-label">Waktu</span>
+                    <span class="stat-value" id="timer">60</span>
+                </div>
+                <div class="stat-box" id="livesBox" style="display:none;">
+                    <span class="stat-label">Nyawa</span>
+                    <span class="stat-value" id="lives">❤️❤️❤️</span>
+                </div>
+                <div class="stat-box" id="questionCountBox" style="display:none;">
+                    <span class="stat-label">Soal</span>
+                    <span class="stat-value" id="questionCount">1/40</span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <!-- Combo Badge -->
+            <div class="combo-badge" id="comboBadge" style="display:none;">
+                <span id="comboText">COMBO x2! 🔥</span>
+            </div>
+
+            <!-- Question Box -->
+            <div class="question-box">
+                <div class="question" id="question">5 + 3 = ?</div>
+                <div class="answer-container">
+                    <input type="number" id="answerInput" class="answer-input" placeholder="Jawaban">
+                    <button class="btn btn-submit" onclick="checkAnswer()">✓ Jawab</button>
+                </div>
+            </div>
+
+            <!-- Feedback -->
+            <div class="feedback" id="feedback"></div>
+
+            <!-- Buttons -->
+            <div class="game-buttons">
+                <button class="btn btn-small" onclick="pauseGame()">⏸ Pause</button>
+                <button class="btn btn-small btn-danger" onclick="quitGame()">❌ Keluar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Halaman Game Over -->
+    <div id="gameOver" class="screen">
+        <div class="container">
+            <div class="game-over-box">
+                <h2 class="game-over-title">GAME OVER!</h2>
+                <div class="final-stats">
+                    <div class="stat-item">
+                        <span class="stat-icon">🎯</span>
+                        <span class="stat-name">Skor Akhir</span>
+                        <span class="stat-number" id="finalScore">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">✓</span>
+                        <span class="stat-name">Benar</span>
+                        <span class="stat-number" id="correctAnswers">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">✗</span>
+                        <span class="stat-name">Salah</span>
+                        <span class="stat-number" id="wrongAnswers">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-icon">🔥</span>
+                        <span class="stat-name">Combo Tertinggi</span>
+                        <span class="stat-number" id="maxCombo">0</span>
+                    </div>
+                </div>
+                <div class="high-score-notification" id="newHighScore" style="display:none;">
+                    🏆 HIGH SCORE BARU! 🏆
+                </div>
+                <div class="game-over-buttons">
+                    <button class="btn btn-primary" onclick="restartGame()">🔄 Main Lagi</button>
+                    <button class="btn btn-secondary" onclick="showMainMenu()">🏠 Menu Utama</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Halaman Cara Bermain -->
+    <div id="howToPlay" class="screen">
+        <div class="container">
+            <h2>📖 Cara Bermain</h2>
+            <div class="info-box">
+                <h3>🎯 Mode Permainan</h3>
+                <div class="info-item">
+                    <strong>⏱️ Mode Waktu:</strong>
+                    <p>Jawab sebanyak mungkin soal dalam waktu 60 detik. Kumpulkan poin sebanyak-banyaknya!</p>
+                </div>
+                <div class="info-item">
+                    <strong>❤️ Mode Survival:</strong>
+                    <p>Kamu punya 3 nyawa. Setiap salah jawab, nyawa berkurang 1. Bertahanlah selama mungkin!</p>
+                </div>
+                <div class="info-item">
+                    <strong>🎯 Mode Tantangan:</strong>
+                    <p>Selesaikan 40 soal dan raih skor tertinggi. Tidak ada batasan waktu!</p>
+                </div>
+                
+                <h3>📊 Sistem Skor</h3>
+                <div class="info-item">
+                    <p>✅ Jawaban Benar: <strong>+10 poin</strong></p>
+                    <p>❌ Jawaban Salah: <strong>-5 poin</strong> (kecuali mode survival)</p>
+                    <p>🔥 Combo Bonus: Jawab cepat untuk mendapat combo multiplier!</p>
+                </div>
+
+                <h3>🎓 Level Kesulitan</h3>
+                <div class="info-item">
+                    <p><strong>Mudah:</strong> Penjumlahan dan Pengurangan (1-20)</p>
+                    <p><strong>Sedang:</strong> Perkalian dan Pembagian (1-10)</p>
+                    <p><strong>Sulit:</strong> Campuran semua operasi (1-50)</p>
+                    <p><strong>Expert:</strong> Semua operasi dengan waktu cepat (1-100)</p>
+                </div>
+
+                <h3>💡 Tips</h3>
+                <div class="info-item">
+                    <p>• Jawab dengan cepat untuk mendapatkan combo bonus</p>
+                    <p>• Hati-hati dengan operasi pembagian - jawaban harus bulat</p>
+                    <p>• Gunakan keyboard (Enter) untuk submit lebih cepat</p>
+                    <p>• Fokus dan jangan terburu-buru di mode survival</p>
+                </div>
+            </div>
+            <button class="btn btn-back" onclick="showMainMenu()">⬅ Kembali</button>
+        </div>
+    </div>
+
+    <!-- Halaman High Score -->
+    <div id="highScoreScreen" class="screen">
+        <div class="container">
+            <h2>🏆 High Score</h2>
+            <div class="highscore-container">
+                <div class="highscore-table">
+                    <div class="highscore-header">
+                        <span>Level</span>
+                        <span>Mode</span>
+                        <span>Skor</span>
+                    </div>
+                    <div id="highScoreList">
+                        <!-- High scores will be inserted here -->
+                    </div>
+                </div>
+                <button class="btn btn-danger btn-small" onclick="clearHighScores()" style="margin-top: 20px;">
+                    🗑️ Hapus Semua Skor
+                </button>
+            </div>
+            <button class="btn btn-back" onclick="showMainMenu()">⬅ Kembali</button>
+        </div>
+    </div>
+
+    <!-- Audio Elements (hidden) -->
+    <audio id="correctSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFgH58eHRxbWlmY2BdW1lXVVNSUU9OTUxLSkpJSEdHRkVFREREQ0JCQkFBQEA/Pz4+PT08PDw7Ozs6OTk4ODc3NjY1NTU0MzMzMjIyMTExMDAwLy8vLi4uLS0tLCwsKysrKioqKSkpKCkoKCcnJyYmJiUlJSQkJCMjIyMiIiIhISEgIB8fHx4eHh0dHRwcHBsbGxoaGhkZGRgYGBcXFxYWFhUVFRQUFBMTExISEhISEREREB8PDw8ODg4NDQ0MDAwLCwsKCwoJCQkICAgHBwcGBgYFBQUEBAQDAwMCAgIBAQEBAAABAgMEBQYHCAkKCwwNDg8QERITFBUWFxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/w==" type="audio/wav">
+    </audio>
+    <audio id="wrongSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAAD+/fz7+vn4+Pf29fTz8vHx8O/u7ezr6+rp6Ofm5eTk4+Lh4N/e3dzb2tnY2NbW1dTT0tHQz8/OzczLysnIx8bFxMPCwcDAvr29vLu6uLe3trW0s7KxsK+uraylpKOioJ+enZybmpmYl5aVlJOSj4+OjYyLiomIh4aFhIOCgYB/fn18e3p5eHd3dnV0c3JxcG9ubWxsamppZ2ZlZGNiYWBfXl1cW1paWFdWVVRTU1FQT05NTEtKSUhIRkZFQ0JBQEBAQDw7Ojk4Nzc2MzIxMDAvLiwtLSsqKSgnJycmJSMiIiEhIB8eHR0cGxoZGRgYFxcWFhYVFBMTExIREREQDw8ODw4NDQ0MDAsLCgoKCQkICAgIBwcGBwYFBQUEBAMDAwMCAgEBAQEAAQEBAQEBAgICAgMDBAQEBQUGBgYHBwgICAkJCgoLCwwMDQ0NDg4PDw8QERESEhMTExQVFRYXFxgYGRkaGhscHB0eHh8gICEhIiIjJCQlJSYnJygpKSorKywtLS4vMDAxMTIzNDQ1Njc3ODk6Ozs8PT4+P0BBQUJDREVGRkhISUpLTE1OT1BRUlNUVVZXWFlaW1xdXl9gYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXp7fH1+f4CBgoOEhYaHiImKi4yNjo+QkZKTlJWWl5iZmpucnZ6foKGio6SlpqeoqaqrrK2ur7CxsrO0tba3uLm6u7y9vr/AwcLDxMXGx8jJysvMzc7P0NHS09TV1tfY2dra29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+Pn6+/z9/v8=" type="audio/wav">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
